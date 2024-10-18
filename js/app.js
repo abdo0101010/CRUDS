@@ -7,8 +7,10 @@ let total = document.getElementById("total");
 let count = document.getElementById("count");
 let getogery = document.getElementById("getogery");
 let Create = document.getElementById("create");
-
+let mod='create';
+let temp;
 console.log(title, price, tax, ads, discount, total, count, getogery);
+//effect total 
 function totall() {
   if (price != "") {
     let tot = +price.value + +tax.value + +ads.value - +discount.value;
@@ -26,6 +28,7 @@ if (localStorage.product != null) {
 } else {
   prop = [];
 }
+//add products
 Create.onclick = function add() {
   let item = {
     title: title.value,
@@ -37,6 +40,7 @@ Create.onclick = function add() {
     count: count.value,
     getogery: getogery.value,
   };
+  if(mod=='create'){
   if (item.count > 1) {
     for (let i = 0; i < item.count; i++) {
       prop.push(item);
@@ -44,12 +48,22 @@ Create.onclick = function add() {
   } else {
     prop.push(item);
   }
+}
+else{
+  prop[temp]=item;
+  mod="create";
+  count.style.display="inline-block"
+  Create.innerHTML="create";
+   totall();
+  
+}
   
   localStorage.setItem("product", JSON.stringify(prop));
   console.log(prop);
   clear();
   show();
 };
+//clear
 function clear() {
   title.value = "";
   price.value = "";
@@ -60,7 +74,7 @@ function clear() {
   count.value = "";
   getogery.value = "";
 }
-
+//display
 function show() {
   let shows = "";
   for (let i = 0; i < prop.length; i++) {
@@ -73,7 +87,7 @@ function show() {
                         <td>${prop[i].discount}</td>
                         <td>${prop[i].total}</td>
                         <td>${prop[i].getogery}</td>
-                        <td><button  id="update">update</button></td>
+                        <td><button onclick="update(${i})"  id="update">update</button></td>
                         <td><button onclick="remove(${i})" id="delete">delete</button></td>
                     </tr>`;
     console.log(title);
@@ -98,6 +112,17 @@ function RemoveAll(){
   localStorage.clear();
   prop.splice(0);
   show();
+}
+function update(index) {
+  title.value = prop[index].title;
+  price.value=prop[index].price;
+  tax.value = prop[index].tax;
+  ads.value=prop[index].ads;
+  discount.value=prop[index].discount;
+  Create.innerHTML = "update";
+  count.style.display="none";
+   mod = "update";
+  temp = index;
 }
 
 
